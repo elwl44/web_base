@@ -1,6 +1,7 @@
 package com.finshot.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,15 @@ public class EmployeeService {
 		}
 		
 		return employees;
+	}
+
+	public int idCheck(int id) {
+		return employeeMapper.idCheck(id);
+	}
+
+	public void insertEmployee(Map<String, Object> param) {
+		int id = Util.getAsInt(param.get("id"));
+		param.replace("id", id);
+		employeeMapper.insertEmployee(param);
 	}
 }

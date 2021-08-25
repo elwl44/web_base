@@ -7,5 +7,15 @@
 	<select id="getEmployees" resultType="com.finshot.web.Employee">
 		select * from Employee
 	</select>
+	
+	<select id="idCheck" resultType="int">
+		select count(*) from Employee
+		where id = #{id}
+	</select>
+	
+	<insert id="insertEmployee">
+		insert into employee(id, regDate, updateDate, name, job, phonenumber, email)
+		values(#{id}, now(), now(), #{name}, #{job}, #{phonenumber}, #{email})
+	</insert>
 
 </mapper>
