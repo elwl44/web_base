@@ -4,8 +4,47 @@
 
 <mapper namespace="com.finshot.web.mapper.EmployeeMapper">
 
+	<select id="getTotalCount" resultType="int">
+		SELECT COUNT(*)
+		FROM employee
+		<if test="search_target == 'name'">
+			where name LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+		<if test="search_target == 'id'">
+			where CAST(id as text) LIKE CONCAT(#{searchKeyword})
+		</if>
+		<if test="search_target == 'job'">
+			where job LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+		<if test="search_target == 'email'">
+			where email LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+		<if test="search_target == 'updateDate'">
+			where updateDate LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+	</select>
+
 	<select id="getEmployees" resultType="com.finshot.web.Employee">
-		select * from Employee
+		select * from employee
+		<if test="search_target == 'name'">
+			where name LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+		<if test="search_target == 'id'">
+			where CAST(id as text) LIKE CONCAT(#{searchKeyword})
+		</if>
+		<if test="search_target == 'job'">
+			where job LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+		<if test="search_target == 'email'">
+			where email LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+		<if test="search_target == 'updateDate'">
+			where updateDate LIKE CONCAT('%',#{searchKeyword},'%')
+		</if>
+		ORDER
+		BY id ASC
+		limit #{limitTake}
+		offset #{limitFrom};
 	</select>
 	
 	<select id="idCheck" resultType="int">

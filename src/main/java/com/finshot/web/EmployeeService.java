@@ -14,8 +14,24 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeMapper employeeMapper;
 	
-	public List<Employee> getEmployees() {
-		List<Employee> employees = employeeMapper.getEmployees();
+	public List<Employee> getEmployees(Map<String, Object> param) {
+		int page = Util.getAsInt(param.get("page"), 1);
+		
+		int itemsCountInAPage = (Integer) param.get("itemsCountInAPage");
+		if ( itemsCountInAPage > 100 ) {
+			itemsCountInAPage = 100;
+		}
+		else if ( itemsCountInAPage < 1 ) {
+			itemsCountInAPage = 1;
+		}
+
+		int limitFrom = (page - 1) * itemsCountInAPage;
+		int limitTake = itemsCountInAPage;
+
+		param.put("limitFrom", limitFrom);
+		param.put("limitTake", limitTake);
+		
+		List<Employee> employees = employeeMapper.getEmployees(param);
 		
 		for (int i = 0; i < employees.size(); i++) {
 			String number = String.format("%03d", employees.get(i).getId());
@@ -33,5 +49,9 @@ public class EmployeeService {
 		int id = Util.getAsInt(param.get("id"));
 		param.replace("id", id);
 		employeeMapper.insertEmployee(param);
+	}
+
+	public int getTotalCount(Map<String, Object> param) {
+		return employeeMapper.getTotalCount(param);
 	}
 }

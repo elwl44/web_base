@@ -19,27 +19,54 @@ public class EmployeeController {
 	private EmployeeService service;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String showList(Locale locale, Model model) {
-		List<Employee> employees = service.getEmployees();
+	public String showList(Locale locale, Model model, @RequestParam Map<String, Object> param) {
+		int totalCount = service.getTotalCount(param);
+		int itemsCountInAPage = Util.getAsInt(param.get("search_num"), 10);
 		
+		int totalPage = (int) Math.ceil(totalCount / (double) itemsCountInAPage);
+
+		int pageMenuArmSize = 5;
+		int page = Util.getAsInt(param.get("page"), 1);
+
+		int pageMenuStart = page - pageMenuArmSize;
+		if (pageMenuStart < 1) {
+			pageMenuStart = 1;
+		}
+		int pageMenuEnd = page + pageMenuArmSize;
+		if (pageMenuEnd > totalPage) {
+			pageMenuEnd = totalPage;
+		}
+		param.put("itemsCountInAPage", itemsCountInAPage);
+
+		List<Employee> employees = service.getEmployees(param);
+		String searchKeyword = (String) param.get("searchKeyword");
+		String search_target = (String) param.get("search_target");
+		model.addAttribute("search_target", search_target);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("search_num", itemsCountInAPage);
+		model.addAttribute("totalCount", totalCount); 
+		model.addAttribute("totalPage", totalPage); 
+		model.addAttribute("pageMenuArmSize", pageMenuArmSize); 
+		model.addAttribute("pageMenuStart", pageMenuStart); 
+		model.addAttribute("pageMenuEnd", pageMenuEnd); 
+		model.addAttribute("page", page); 
 		model.addAttribute("employees", employees);
 		return "list";
 	}
-	
+
 	@RequestMapping(value = "/checkSignup", method = RequestMethod.POST)
-	public @ResponseBody String AjaxView(  
-		        @RequestParam("id") int id){
+	public @ResponseBody String AjaxView(@RequestParam("id") int id) {
 		String str = "YES";
 		int idcheck = service.idCheck(id);
-		System.out.println("입력값:"+idcheck);
-		if(idcheck==1){ //이미 존재하는 계정
-			str = "NO";	
-		}else{	//사용 가능한 계정
-			str = "YES";	
+		System.out.println("입력값:" + idcheck);
+		if (idcheck == 1) { // 이미 존재하는 계정
+			str = "NO";
+		} else { // 사용 가능한 계정
+			str = "YES";
 		}
 		return str;
 	}
-	
+
 	@RequestMapping(value = "/doWrite", method = RequestMethod.POST)
 	public String doWrite(Locale locale, Model model, @RequestParam Map<String, Object> param) {
 		service.insertEmployee(param);
@@ -47,6 +74,5 @@ public class EmployeeController {
 		model.addAttribute("replaceUri", String.format("/list"));
 		return "redirect";
 	}
-	
-	
+
 }

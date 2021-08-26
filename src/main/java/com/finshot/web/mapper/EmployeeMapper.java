@@ -7,10 +7,12 @@ import com.finshot.web.Employee;
 
 public interface EmployeeMapper {
 
-	List<Employee> getEmployees();
+	List<Employee> getEmployees(Map<String, Object> param);
 
 	int idCheck(int id);
 
 	void insertEmployee(Map<String, Object> param);
+
+	int getTotalCount(Map<String, Object> param);
 
 }
