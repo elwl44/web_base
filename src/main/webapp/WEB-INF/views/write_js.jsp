@@ -154,6 +154,9 @@
 			$("#id").attr('disabled', false);
 			$("#idcheck").addClass("act");
 			$("#idcheck").attr('disabled', false);
+			$("#modifyid").attr('disabled', false);
+			$("#modifyidcheck").addClass("act");
+			$("#modifyidcheck").attr('disabled', false);
 		});
 
 		// 핸드폰 번호 체크 정규식

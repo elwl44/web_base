@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.finshot.web.mapper.EmployeeMapper;
-import com.finshot.web.mapper.TestMapper;
 
 @Service
 public class EmployeeService {	
@@ -53,5 +52,13 @@ public class EmployeeService {
 
 	public int getTotalCount(Map<String, Object> param) {
 		return employeeMapper.getTotalCount(param);
+	}
+
+	public void updateEmployee(Map<String, Object> param) {
+		int id = Util.getAsInt(param.get("id"));
+		param.replace("id", id);
+		int mainid = Util.getAsInt(param.get("mainid"));
+		param.replace("mainid", mainid);
+		employeeMapper.updateEmployee(param);
 	}
 }

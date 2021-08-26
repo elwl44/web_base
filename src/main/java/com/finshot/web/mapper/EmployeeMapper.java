@@ -15,4 +15,6 @@ public interface EmployeeMapper {
 
 	int getTotalCount(Map<String, Object> param);
 
+	void updateEmployee(Map<String, Object> param);
+
 }

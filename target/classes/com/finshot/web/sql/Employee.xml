@@ -56,5 +56,15 @@
 		insert into employee(id, regDate, updateDate, name, job, phonenumber, email)
 		values(#{id}, now(), now(), #{name}, #{job}, #{phonenumber}, #{email})
 	</insert>
-
+	
+	<update id="updateEmployee">
+		UPDATE employee set
+		id = #{id},
+		updateDate = NOW(),
+		name = #{name},
+		job = #{job},
+		phonenumber	= #{phonenumber},
+		email = #{email}
+		WHERE id = #{mainid}
+	</update>
 </mapper>

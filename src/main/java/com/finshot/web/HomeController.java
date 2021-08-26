@@ -21,9 +21,6 @@ public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
-	@Autowired
-	private TestService service;
-	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String showList(Locale locale, Model model) {
 		return "redirect:/list";

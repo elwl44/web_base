@@ -55,14 +55,14 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = "/checkSignup", method = RequestMethod.POST)
-	public @ResponseBody String AjaxView(@RequestParam("id") int id) {
+	public @ResponseBody String AjaxView(@RequestParam("id") int id, @RequestParam("mainid") int mainid) {
 		String str = "YES";
 		int idcheck = service.idCheck(id);
 		System.out.println("입력값:" + idcheck);
-		if (idcheck == 1) { // 이미 존재하는 계정
-			str = "NO";
-		} else { // 사용 가능한 계정
+		if (idcheck == 0 || id == mainid) { // 사용 가능한 계정
 			str = "YES";
+		} else { // 이미 존재하는 계정
+			str = "NO";
 		}
 		return str;
 	}
@@ -70,6 +70,14 @@ public class EmployeeController {
 	@RequestMapping(value = "/doWrite", method = RequestMethod.POST)
 	public String doWrite(Locale locale, Model model, @RequestParam Map<String, Object> param) {
 		service.insertEmployee(param);
+		model.addAttribute("msg", "등록되었습니다.");
+		model.addAttribute("replaceUri", String.format("/list"));
+		return "redirect";
+	}
+	
+	@RequestMapping(value = "/doModify", method = RequestMethod.POST)
+	public String doModify(Locale locale, Model model, @RequestParam Map<String, Object> param) {
+		service.updateEmployee(param);
 		model.addAttribute("msg", "등록되었습니다.");
 		model.addAttribute("replaceUri", String.format("/list"));
 		return "redirect";

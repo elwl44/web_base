@@ -10,7 +10,7 @@
 <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <jsp:include page="modal.jsp" />
-<script type="text/javascript" src="../../resources/js/modal.js"></script>
+<jsp:include page="modify.jsp" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>직원 목록</title>
@@ -41,9 +41,12 @@
 		}else if(target == "updateDate"){
 			$('#search_target option[value=updateDate]').attr('selected','selected');
 		}
+		
+		
 	});
 </script>
 <%@include file="write_js.jsp"%>
+<%@include file="modify_js.jsp"%>
 </head>
 <body>
 
@@ -51,7 +54,7 @@
 	<div class="row">
 		<div class="col-md-6">
 			<button type="button" class="btn btn-outline-primary show" id="createBtn" data-toggle="modal">등록</button>
-			<button type="button" class="btn btn-outline-primary show">수정</button>
+			<button type="button" class="btn btn-outline-primary show" id="modifyBtn" data-toggle="modify">수정</button>
 			<button type="button" class="btn btn-outline-primary show">삭제</button>
 		</div>
 		<div class="col-md-6">
