@@ -7,6 +7,10 @@
 		// 모달 열기
 		$("#modifyBtn").click(function() {
 			console.log("수정");
+			if ($('input[name=c1]:checked').length == 0) {
+				alert('직원을 선택해주세요.');
+				return;
+			}
 			var rowData = new Array();
 			var totaldata = new Array();
 			var checkbox = $("input[name=c1]:checked");
