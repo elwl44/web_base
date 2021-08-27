@@ -60,7 +60,8 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = "/checkSignup", method = RequestMethod.POST)
-	public @ResponseBody String AjaxView(@RequestParam("id") int id, @RequestParam("mainid") int mainid) {
+	public @ResponseBody String AjaxView(@RequestParam("id") int id, @RequestParam Map<String, Object> param) {
+		int mainid = Util.getAsInt(param.get("mainid"));
 		String str = "YES";
 		int idcheck = service.idCheck(id);
 		System.out.println("입력값:" + idcheck);

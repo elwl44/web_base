@@ -49,7 +49,7 @@
 			var phonenumber = td.eq(4).text();
 			var email = td.eq(5).text();
 			var updateDate = td.eq(6).text();
-
+			name = name.trim();
 			$("#modify_main_id").val(id);
 			$("#modifyid").val(id);
 			$("#modifyname").val(name);
