@@ -17,4 +17,6 @@ public interface EmployeeMapper {
 
 	void updateEmployee(Map<String, Object> param);
 
+	List<Employee> getEmployee(int id);
+
 }

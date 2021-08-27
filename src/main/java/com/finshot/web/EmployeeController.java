@@ -1,8 +1,11 @@
 package com.finshot.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.gson.Gson;
 
 @Controller
 public class EmployeeController {
@@ -82,5 +87,13 @@ public class EmployeeController {
 		model.addAttribute("replaceUri", String.format("/list"));
 		return "redirect";
 	}
+	
+	@RequestMapping(value = "/test")
+	@ResponseBody
+	public List<Employee> test(HttpServletResponse response, @RequestParam("id") int id) {
+		List<Employee> employee = service.getEmployee(id);
+		return employee;
+	}
+		
 
 }

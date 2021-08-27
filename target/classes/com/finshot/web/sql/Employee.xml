@@ -67,4 +67,9 @@
 		email = #{email}
 		WHERE id = #{mainid}
 	</update>
+	
+	<select id="getEmployee" resultType="com.finshot.web.Employee">
+		select * from Employee
+		where id = #{id}
+	</select>
 </mapper>

@@ -11,6 +11,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <jsp:include page="modal.jsp" />
 <jsp:include page="modify.jsp" />
+<jsp:include page="detail.jsp" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>직원 목록</title>
@@ -42,11 +43,11 @@
 			$('#search_target option[value=updateDate]').attr('selected','selected');
 		}
 		
-		
 	});
 </script>
 <%@include file="write_js.jsp"%>
 <%@include file="modify_js.jsp"%>
+<%@include file="detail_js.jsp"%>
 </head>
 <body>
 
@@ -101,7 +102,9 @@
 							<input type="checkbox" name="c1" id="c1" title="선택" class="check _checkMember" value="${article.id }" data-manager="true" data-staff="false">
 						</th>
 						<td>${article.idt }</td>
-						<td>${article.name }</td>
+						<td>
+							<a href="javascript:void(0);" onclick="callFunction(${article.id});">${article.name }</a>
+						</td>
 						<td>${article.job }</td>
 						<td>${article.phonenumber }</td>
 						<td>${article.email }</td>

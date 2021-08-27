@@ -61,4 +61,8 @@ public class EmployeeService {
 		param.replace("mainid", mainid);
 		employeeMapper.updateEmployee(param);
 	}
+
+	public List<Employee> getEmployee(int id) {
+		return employeeMapper.getEmployee(id);
+	}
 }
