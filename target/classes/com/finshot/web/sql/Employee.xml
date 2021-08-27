@@ -72,4 +72,9 @@
 		select * from Employee
 		where id = #{id}
 	</select>
+	
+	<delete id="deleteEmployee">
+		DELETE FROM employee
+		WHERE id = #{id}
+	</delete>
 </mapper>

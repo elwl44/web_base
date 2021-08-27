@@ -96,5 +96,15 @@ public class EmployeeController {
 		return employee;
 	}
 		
-
+	@RequestMapping(value = "/doDelete", method = RequestMethod.POST)
+	@ResponseBody
+	public String doDelete(Locale locale, Model model, @RequestParam Map<String, Object> param, @RequestParam(value = "id[]") List<Integer> vals) {
+		for (int i = 0; i < vals.size(); i++) {
+			System.out.println("vals(" + i + ") : " + vals.get(i));
+			service.deleteEmployee(vals.get(i));
+		}
+		model.addAttribute("msg", "등록되었습니다.");
+		model.addAttribute("replaceUri", String.format("/list"));
+		return "redirect";
+	}
 }

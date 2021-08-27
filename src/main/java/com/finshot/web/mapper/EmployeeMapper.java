@@ -19,4 +19,6 @@ public interface EmployeeMapper {
 
 	List<Employee> getEmployee(int id);
 
+	void deleteEmployee(int id);
+
 }

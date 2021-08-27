@@ -65,4 +65,8 @@ public class EmployeeService {
 	public List<Employee> getEmployee(int id) {
 		return employeeMapper.getEmployee(id);
 	}
+
+	public void deleteEmployee(int id) {
+		employeeMapper.deleteEmployee(id);
+	}
 }
