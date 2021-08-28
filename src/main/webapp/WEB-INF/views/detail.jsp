@@ -17,7 +17,7 @@
 						<span class="labeltext">직원번호</span>
 					</label>
 					<div class="col-md-8" style="padding: 0; padding-right: 10px;">
-						<span class="" id="detailid">1</span>
+						<span class="" id="detailid"></span>
 					</div>
 				</div>
 

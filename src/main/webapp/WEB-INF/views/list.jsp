@@ -12,6 +12,7 @@
 <jsp:include page="modal.jsp" />
 <jsp:include page="modify.jsp" />
 <jsp:include page="delete.jsp" />
+<jsp:include page="detail.jsp" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>직원 목록</title>
@@ -49,6 +50,7 @@
 <%@include file="write_js.jsp"%>
 <%@include file="modify_js.jsp"%>
 <%@include file="delete_js.jsp"%>
+<%@include file="detail_js.jsp"%>
 </head>
 <body>
 
@@ -58,7 +60,6 @@
 			<button type="button" class="btn btn-outline-primary show" id="createBtn" data-toggle="modal">등록</button>
 			<button type="button" class="btn btn-outline-primary show" id="modifyBtn" data-toggle="modify">수정</button>
 			<button type="button" class="btn btn-outline-primary show" id="deleteBtn" data-toggle="delete">삭제</button>
-			<a href="/test">테스트</a>
 		</div>
 		<div class="col-md-6">
 			<form class="form-inline float-right">
@@ -104,7 +105,9 @@
 							<input type="checkbox" name="c1" id="c1" title="선택" class="check _checkMember" value="${article.id }" data-manager="true" data-staff="false">
 						</th>
 						<td>${article.idt }</td>
-						<td>${article.name }</td>
+						<td>
+							<a href="javascript:void(0);" onclick="callFunction(${article.id});">${article.name }</a>
+						</td>
 						<td>${article.job }</td>
 						<td>${article.phonenumber }</td>
 						<td>${article.email }</td>

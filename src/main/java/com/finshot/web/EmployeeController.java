@@ -93,9 +93,9 @@ public class EmployeeController {
 		return "redirect";
 	}
 
-	@RequestMapping(value = "/test")
+	@RequestMapping(value = "/showDetail")
 	@ResponseBody
-	public List<Employee> test(HttpServletResponse response, @RequestParam("id") int id) {
+	public List<Employee> showDetail(HttpServletResponse response, @RequestParam("id") int id) {
 		List<Employee> employee = service.getEmployee(id);
 		return employee;
 	}
@@ -111,11 +111,6 @@ public class EmployeeController {
 		model.addAttribute("msg", "등록되었습니다.");
 		model.addAttribute("replaceUri", String.format("/list"));
 		return "redirect";
-	}
-
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	public String test(Locale locale, Model model, @RequestParam Map<String, Object> param) {
-		return "test";
 	}
 
 	@ResponseBody

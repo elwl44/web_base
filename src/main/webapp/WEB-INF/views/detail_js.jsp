@@ -11,7 +11,7 @@ function callFunction(_id) {
 	var email;
 	var updateDate;
 	 $.ajax({
-       url: "/test",
+       url: "/showDetail",
        type: "get",
        data : {
 			"id" : _id
