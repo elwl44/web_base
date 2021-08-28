@@ -64,6 +64,14 @@
 						<span class="" id="detailupdateDate"></span>
 					</div>
 				</div>
+				
+				<div class="row col-md-12 form-group">
+					<div class="col-md-2">
+						<span class="labeltext">첨부 파일</span>
+					</div>
+					<div id="detailfileChange" class="col-md-8" style="padding: 0; padding-right: 10px;">
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>

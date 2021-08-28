@@ -84,4 +84,14 @@
 		default, #{empid}, #{originalFileName}, #{savedFileName}, now()
 		)
 	</insert>
+	
+	<select id="getEmpfile" resultType="com.finshot.web.Empfile">
+		select * from emp_file
+		where empid = #{id}
+	</select>
+	
+	<select id="getEmpfilebyFileid" resultType="com.finshot.web.Empfile">
+		select * from emp_file
+		where fileid = #{fileid}
+	</select>
 </mapper>

@@ -73,4 +73,12 @@ public class EmployeeService {
 	public void insertFile(Map<String, Object> param) {
 		employeeMapper.insertFile(param);
 	}
+
+	public List<Empfile> getEmpfile(int id) {
+		return employeeMapper.getEmpfile(id);
+	}
+
+	public Empfile getEmpfilebyFileid(Map<String, Object> param) {
+		return employeeMapper.getEmpfilebyFileid(param);
+	}
 }

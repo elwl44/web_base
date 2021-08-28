@@ -3,6 +3,7 @@ package com.finshot.web.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.finshot.web.Empfile;
 import com.finshot.web.Employee;
 
 public interface EmployeeMapper {
@@ -22,5 +23,9 @@ public interface EmployeeMapper {
 	void deleteEmployee(int id);
 
 	void insertFile(Map<String, Object> param);
+
+	List<Empfile> getEmpfile(int id);
+
+	Empfile getEmpfilebyFileid(Map<String, Object> param);
 
 }

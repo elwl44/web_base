@@ -1,7 +1,10 @@
 package com.finshot.web;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -95,9 +99,14 @@ public class EmployeeController {
 
 	@RequestMapping(value = "/showDetail")
 	@ResponseBody
-	public List<Employee> showDetail(HttpServletResponse response, @RequestParam("id") int id) {
+	public Map<String, Object> showDetail(HttpServletResponse response, @RequestParam("id") int id) {
 		List<Employee> employee = service.getEmployee(id);
-		return employee;
+		List<Empfile> empfiles = service.getEmpfile(id);
+		System.out.println(empfiles);
+		Map<String, Object> list = new HashMap<String, Object>();
+		list.put("employee", employee);
+		list.put("empfiles", empfiles);
+		return list;
 	}
 
 	@RequestMapping(value = "/doDelete", method = RequestMethod.POST)
@@ -115,29 +124,28 @@ public class EmployeeController {
 
 	@ResponseBody
 	@RequestMapping(value = "/file-upload", method = RequestMethod.POST)
-	public String fileUpload(@RequestParam("article_file") List<MultipartFile> multipartFile, @RequestParam Map<String, Object> param) {
+	public String fileUpload(@RequestParam("article_file") List<MultipartFile> multipartFile,
+			@RequestParam Map<String, Object> param) {
 		String strResult = "{ \"result\":\"FAIL\" }";
 		String fileRoot;
 		try {
 			// 파일이 있을때 탄다.
 			if (multipartFile.size() > 0 && !multipartFile.get(0).getOriginalFilename().equals("")) {
+				int empid = Util.getAsInt(param.get("empid"));
+				param.replace("empid", empid);
 				for (MultipartFile file : multipartFile) {
 					fileRoot = "C://upload/";
-					int empid = Util.getAsInt(param.get("empid"));
-					param.replace("empid", empid);
 					String originalFileName = file.getOriginalFilename(); // 오리지날 파일명
 					String savedFileName = UUID.randomUUID().toString();// 저장될 파일 명
-					
+
 					File targetFile = new File(fileRoot + savedFileName);
 					try {
 						InputStream fileStream = file.getInputStream();
 						FileUtils.copyInputStreamToFile(fileStream, targetFile); // 파일 저장
 						param.put("originalFileName", originalFileName);
 						param.put("savedFileName", savedFileName);
-						System.out.println(originalFileName+"입니다.");
 						service.insertFile(param);
 					} catch (Exception e) {
-						System.out.println("여기");
 						// 파일삭제
 						FileUtils.deleteQuietly(targetFile); // 저장된 현재 파일 삭제
 						e.printStackTrace();
@@ -153,5 +161,27 @@ public class EmployeeController {
 			e.printStackTrace();
 		}
 		return strResult;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/fileDownload")
+	public void fileDownload(@RequestParam Map<String, Object> param, HttpServletResponse response,
+			HttpServletRequest request) throws Exception {
+		int fileid = Util.getAsInt(param.get("fileid"));
+		param.replace("fileid", fileid);
+		
+		Empfile empfile = service.getEmpfilebyFileid(param);
+		
+		String storedFileName = empfile.getStored_file_name();
+		String originalFileName = empfile.getOrg_file_name();
+		byte fileByte[] = FileUtils.readFileToByteArray(new File("C:\\upload\\" + storedFileName));
+		response.setContentType("application/octet-stream");
+		response.setContentLength(fileByte.length);
+		response.setHeader("Content-Disposition",
+				"attachment; fileName=\"" + URLEncoder.encode(originalFileName, "UTF-8") + "\";");
+		response.setHeader("Content-Transfer-Encoding", "binary");
+		response.getOutputStream().write(fileByte);
+		response.getOutputStream().flush();
+		response.getOutputStream().close();
 	}
 }
