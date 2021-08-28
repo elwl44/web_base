@@ -21,4 +21,6 @@ public interface EmployeeMapper {
 
 	void deleteEmployee(int id);
 
+	void insertFile(Map<String, Object> param);
+
 }

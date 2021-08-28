@@ -69,4 +69,8 @@ public class EmployeeService {
 	public void deleteEmployee(int id) {
 		employeeMapper.deleteEmployee(id);
 	}
+
+	public void insertFile(Map<String, Object> param) {
+		employeeMapper.insertFile(param);
+	}
 }

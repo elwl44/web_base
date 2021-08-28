@@ -58,6 +58,7 @@
 			<button type="button" class="btn btn-outline-primary show" id="createBtn" data-toggle="modal">등록</button>
 			<button type="button" class="btn btn-outline-primary show" id="modifyBtn" data-toggle="modify">수정</button>
 			<button type="button" class="btn btn-outline-primary show" id="deleteBtn" data-toggle="delete">삭제</button>
+			<a href="/test">테스트</a>
 		</div>
 		<div class="col-md-6">
 			<form class="form-inline float-right">

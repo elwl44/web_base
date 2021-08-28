@@ -77,4 +77,11 @@
 		DELETE FROM employee
 		WHERE id = #{id}
 	</delete>
+	
+	<insert id="insertFile">
+		insert into emp_file(fileid, empid, org_file_name, stored_file_name, regDate)
+		values(
+		default, #{empid}, #{originalFileName}, #{savedFileName}, now()
+		)
+	</insert>
 </mapper>

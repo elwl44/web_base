@@ -15,7 +15,7 @@
 			type = 'POST'
 			$("#myModal").modal();
 		});
-
+		$("#input_file").on("change", fileCheck);
 		// 중복체크 클릭
 		$("#idcheck").click(function() {
 			$("#id").val($("#id").val().trim());
@@ -60,9 +60,10 @@
 				}
 			})
 		});
-
+		var checked = false;
 		// 등록모달 입력
 		$("#modalSubmit").click(function() {
+			
 			if ($("#idcheck").is(".act")) {
 				alert('직원번호를 중복체크 해주세요.');
 				$("#id").focus();
@@ -120,27 +121,67 @@
 				$("#email").focus();
 				return;
 			}
-
-			if (action == 'create') {
-				url = '/doWrite';
-			}
-
-			var data = {
-				"id" : $("#id").val(),
-				"name" : $("#name").val(),
-				"job" : $("#job").val(),
-				"phonenumber" : $("#phonenumber").val(),
-				"email" : $("#email").val()
-			};
-			$.ajax({
-				url : url,
-				type : type,
-				data : data,
-				success : function(data) {
-					$("#myModal").modal('toggle');
-					location.replace("/list");
+			var empid = $("#id").val();
+			var form = $("form")[0];        
+		 	var formData = new FormData(form);
+			var fileSize = 0;
+			for (var x = 0; x < content_files.length; x++) {
+				// 삭제 안한것만 담아 준다. 
+				if(!content_files[x].is_delete){
+					formData.append("article_file", content_files[x]);
+					formData.append("empid", empid);
+					fileSize++;
 				}
-			})
+			}
+			if (fileSize == 0) {
+				alert("1개이상의 파일을 등록해 주세요.");
+				return;
+			}
+		   /*
+		   * 파일업로드 multiple ajax처리
+		   */
+		  
+			$.ajax({
+		   	      type: "POST",
+		   	   	  enctype: "multipart/form-data",
+		   	      url: "/file-upload",
+		       	  data : formData,
+		       	  processData: false,
+		   	      contentType: false,
+		   	      success: function (data) {
+		   	    	if(JSON.parse(data)['result'] == "OK"){
+		   	    		alert("파일업로드 성공");
+					} else
+						alert("서버내 오류로 처리가 지연되고있습니다. 잠시 후 다시 시도해주세요");
+		   	      },
+		   	      error: function (xhr, status, error) {
+		   	    	alert("서버오류로 지연되고있습니다. 잠시 후 다시 시도해주시기 바랍니다.");
+		   	     	return false;
+		   	      }, complete : function() {		   
+		   	    	  
+		       	  }
+		   	    });
+		   
+				if (action == 'create') {
+					url = '/doWrite';
+				}
+
+				var data = {
+					"id" : $("#id").val(),
+					"name" : $("#name").val(),
+					"job" : $("#job").val(),
+					"phonenumber" : $("#phonenumber").val(),
+					"email" : $("#email").val()
+				};
+				$.ajax({
+					url : url,
+					type : type,
+					data : data,
+					success : function(data) {
+						$("#myModal").modal('toggle');
+						location.replace("/list");
+					}
+				})
 		});
 
 		//등록 모달 종료 이벤트
@@ -176,6 +217,66 @@
 			return regExp.test(asValue); // 형식에 맞는 경우 true 리턴	
 		}
 	});
+	$(function() {
+		$('#btn-upload').click(function(e) {
+			e.preventDefault();
+			$('#input_file').click();
+		});
+	});
+	
+	// 파일 현재 필드 숫자 totalCount랑 비교값
+	var fileCount = 0;
+	// 해당 숫자를 수정하여 전체 업로드 갯수를 정한다.
+	var totalCount = 10;
+	// 파일 고유넘버
+	var fileNum = 0;
+	// 첨부파일 배열
+	var content_files = new Array();
+
+	function fileCheck(e) {
+	    var files = e.target.files;
+	    
+	    // 파일 배열 담기
+	    var filesArr = Array.prototype.slice.call(files);
+	    
+	    // 파일 개수 확인 및 제한
+	    if (fileCount + filesArr.length > totalCount) {
+	      alert('파일은 최대 '+totalCount+'개까지 업로드 할 수 있습니다.');
+	      return;
+	    } else {
+	    	 fileCount = fileCount + filesArr.length;
+	    }
+	    
+	    // 각각의 파일 배열담기 및 기타
+	    filesArr.forEach(function (f) {
+	      var reader = new FileReader();
+	      reader.onload = function (e) {
+	        content_files.push(f);
+	        $('#articlefileChange').append(
+	       		'<div id="file' + fileNum + '" >'
+	       		+ '<font style="font-size:12px">' + f.name + '</font>'  
+	       		+ '<a href="#" style="margin-left: 5px; font-size: 12px;"'
+	       		+ 'onclick="fileDelete(\'file' + fileNum + '\')">삭제</a>' 
+	       		+ '<div/>'
+			);
+	        fileNum ++;
+	      };
+	      reader.readAsDataURL(f);
+	    });
+	    console.log(content_files);
+	    //초기화 한다.
+	    $("#input_file").val("");
+	  }
+	
+	// 파일 부분 삭제 함수
+	function fileDelete(fileNum){
+	    var no = fileNum.replace(/[^0-9]/g, "");
+	    content_files[no].is_delete = true;
+		$('#' + fileNum).remove();
+		fileCount --;
+	    console.log(content_files);
+	}
+
 </script>
 </head>
 </html>

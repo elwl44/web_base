@@ -1,12 +1,17 @@
 package com.finshot.web;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.google.gson.Gson;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class EmployeeController {
@@ -27,7 +31,7 @@ public class EmployeeController {
 	public String showList(Locale locale, Model model, @RequestParam Map<String, Object> param) {
 		int totalCount = service.getTotalCount(param);
 		int itemsCountInAPage = Util.getAsInt(param.get("search_num"), 10);
-		
+
 		int totalPage = (int) Math.ceil(totalCount / (double) itemsCountInAPage);
 
 		int pageMenuArmSize = 5;
@@ -49,12 +53,12 @@ public class EmployeeController {
 		model.addAttribute("search_target", search_target);
 		model.addAttribute("searchKeyword", searchKeyword);
 		model.addAttribute("search_num", itemsCountInAPage);
-		model.addAttribute("totalCount", totalCount); 
-		model.addAttribute("totalPage", totalPage); 
-		model.addAttribute("pageMenuArmSize", pageMenuArmSize); 
-		model.addAttribute("pageMenuStart", pageMenuStart); 
-		model.addAttribute("pageMenuEnd", pageMenuEnd); 
-		model.addAttribute("page", page); 
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("totalPage", totalPage);
+		model.addAttribute("pageMenuArmSize", pageMenuArmSize);
+		model.addAttribute("pageMenuStart", pageMenuStart);
+		model.addAttribute("pageMenuEnd", pageMenuEnd);
+		model.addAttribute("page", page);
 		model.addAttribute("employees", employees);
 		return "list";
 	}
@@ -80,7 +84,7 @@ public class EmployeeController {
 		model.addAttribute("replaceUri", String.format("/list"));
 		return "redirect";
 	}
-	
+
 	@RequestMapping(value = "/doModify", method = RequestMethod.POST)
 	public String doModify(Locale locale, Model model, @RequestParam Map<String, Object> param) {
 		service.updateEmployee(param);
@@ -88,17 +92,18 @@ public class EmployeeController {
 		model.addAttribute("replaceUri", String.format("/list"));
 		return "redirect";
 	}
-	
+
 	@RequestMapping(value = "/test")
 	@ResponseBody
 	public List<Employee> test(HttpServletResponse response, @RequestParam("id") int id) {
 		List<Employee> employee = service.getEmployee(id);
 		return employee;
 	}
-		
+
 	@RequestMapping(value = "/doDelete", method = RequestMethod.POST)
 	@ResponseBody
-	public String doDelete(Locale locale, Model model, @RequestParam Map<String, Object> param, @RequestParam(value = "id[]") List<Integer> vals) {
+	public String doDelete(Locale locale, Model model, @RequestParam Map<String, Object> param,
+			@RequestParam(value = "id[]") List<Integer> vals) {
 		for (int i = 0; i < vals.size(); i++) {
 			System.out.println("vals(" + i + ") : " + vals.get(i));
 			service.deleteEmployee(vals.get(i));
@@ -106,5 +111,52 @@ public class EmployeeController {
 		model.addAttribute("msg", "등록되었습니다.");
 		model.addAttribute("replaceUri", String.format("/list"));
 		return "redirect";
+	}
+
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public String test(Locale locale, Model model, @RequestParam Map<String, Object> param) {
+		return "test";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/file-upload", method = RequestMethod.POST)
+	public String fileUpload(@RequestParam("article_file") List<MultipartFile> multipartFile, @RequestParam Map<String, Object> param) {
+		String strResult = "{ \"result\":\"FAIL\" }";
+		String fileRoot;
+		try {
+			// 파일이 있을때 탄다.
+			if (multipartFile.size() > 0 && !multipartFile.get(0).getOriginalFilename().equals("")) {
+				for (MultipartFile file : multipartFile) {
+					fileRoot = "C://upload/";
+					int empid = Util.getAsInt(param.get("empid"));
+					param.replace("empid", empid);
+					String originalFileName = file.getOriginalFilename(); // 오리지날 파일명
+					String savedFileName = UUID.randomUUID().toString();// 저장될 파일 명
+					
+					File targetFile = new File(fileRoot + savedFileName);
+					try {
+						InputStream fileStream = file.getInputStream();
+						FileUtils.copyInputStreamToFile(fileStream, targetFile); // 파일 저장
+						param.put("originalFileName", originalFileName);
+						param.put("savedFileName", savedFileName);
+						System.out.println(originalFileName+"입니다.");
+						service.insertFile(param);
+					} catch (Exception e) {
+						System.out.println("여기");
+						// 파일삭제
+						FileUtils.deleteQuietly(targetFile); // 저장된 현재 파일 삭제
+						e.printStackTrace();
+						break;
+					}
+				}
+				strResult = "{ \"result\":\"OK\" }";
+			}
+			// 파일 아무것도 첨부 안했을때 탄다.(게시판일때, 업로드 없이 글을 등록하는경우)
+			else
+				strResult = "{ \"result\":\"OK\" }";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return strResult;
 	}
 }
