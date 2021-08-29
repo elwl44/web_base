@@ -197,6 +197,7 @@
 			$("#modifyid").attr('disabled', false);
 			$("#modifyidcheck").addClass("act");
 			$("#modifyidcheck").attr('disabled', false);
+			$("#detailfileChange").empty();
 		});
 
 		// 핸드폰 번호 체크 정규식

@@ -28,4 +28,6 @@ public interface EmployeeMapper {
 
 	Empfile getEmpfilebyFileid(Map<String, Object> param);
 
+	void deleteEmpfile(int id);
+
 }

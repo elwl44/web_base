@@ -94,4 +94,9 @@
 		select * from emp_file
 		where fileid = #{fileid}
 	</select>
+	
+	<delete id="deleteEmpfile">
+		DELETE FROM emp_file
+		WHERE empid = #{id}
+	</delete>
 </mapper>
