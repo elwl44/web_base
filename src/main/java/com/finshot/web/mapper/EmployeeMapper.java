@@ -30,4 +30,8 @@ public interface EmployeeMapper {
 
 	void deleteEmpfile(int id);
 
+	void deleteEmpfileByFileid(Integer fileid);
+
+	void updateEmpfile(Map<String, Object> param);
+
 }

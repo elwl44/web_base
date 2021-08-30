@@ -197,11 +197,13 @@
 			$("#modifyid").attr('disabled', false);
 			$("#modifyidcheck").addClass("act");
 			$("#modifyidcheck").attr('disabled', false);
+			$("#articlefileChange").empty();
 			$("#detailfileChange").empty();
+			$("#modifyfileChange").empty();
+			modifycontent_files = [];
 		});
-
+		
 		// 핸드폰 번호 체크 정규식
-
 		function isCelluar(asValue) {
 			var regExp = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
 			return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
@@ -232,6 +234,9 @@
 	var fileNum = 0;
 	// 첨부파일 배열
 	var content_files = new Array();
+	
+	// 첨부파일 배열
+	var modifycontent_files = new Array();
 
 	function fileCheck(e) {
 	    var files = e.target.files;
@@ -276,7 +281,15 @@
 		fileCount --;
 	    console.log(content_files);
 	}
-
+	// 파일 부분 삭제 함수
+	function modify_fileDelete(fileNum){
+	    console.log(modifycontent_files);
+		 var no = fileNum.replace(/[^0-9]/g, "");
+		 console.log(fileNum);
+		 modifycontent_files[no].is_delete = true;
+		$('#' + fileNum).remove();
+		fileCount --;
+	}
 </script>
 </head>
 </html>

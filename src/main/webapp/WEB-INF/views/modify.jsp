@@ -1,8 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!-- Modal -->
-<div class="modal fade" id="modifyModal" role="dialog" >
+<div class="modal fade" id="modifyModal" role="dialog">
 	<div class="modal-dialog modal-lg">
 		<!-- Modal content-->
 		<form class="modal-content">
@@ -41,7 +40,7 @@
 						<input class="form-control" id="modifyjob" type="text">
 					</div>
 				</div>
-				
+
 				<div class="row col-md-12 form-group">
 					<label for="phonenumber" class="col-md-2">
 						<span class="labeltext">전화번호</span>
@@ -50,7 +49,7 @@
 						<input class="form-control" id="modifyphonenumber" type="text">
 					</div>
 				</div>
-				
+
 				<div class="row col-md-12 form-group">
 					<label for="job" class="col-md-2">
 						<span class="labeltext">email</span>
@@ -58,6 +57,23 @@
 					<div class="col-md-10" style="padding: 0; padding-right: 10px;">
 						<input class="form-control" id="modifyemail" type="email">
 					</div>
+				</div>
+
+				<div class="row col-md-12 form-group">
+					<div class="col-md-2">
+						<span class="labeltext">파일 업로드</span>
+					</div>
+					<div class="col-md-10" style="padding: 0; padding-right: 10px;">
+						<button id="modify-btn-upload" type="button" style="border: 1px solid #ddd; outline: none;">파일 추가</button>
+						<input id="modify_input_file" multiple="multiple" type="file" style="display: none;">
+						<span style="font-size: 10px; color: gray;">※첨부파일은 최대 10개까지 등록이 가능합니다.</span>
+					</div>
+				</div>
+				<div class="row col-md-12 form-group">
+					<div class="col-md-2">
+						<span class="labeltext">첨부 파일</span>
+					</div>
+					<div id="modifyfileChange" class="col-md-8" style="padding: 0; padding-right: 10px;"></div>
 				</div>
 			</div>
 			<div class="modal-footer">

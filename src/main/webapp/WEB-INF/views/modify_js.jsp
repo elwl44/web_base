@@ -4,6 +4,7 @@
 <head>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$("#modify_input_file").on("change", modify_fileCheck);
 		// 모달 열기
 		$("#modifyBtn").click(function() {
 			console.log("수정");
@@ -14,36 +15,6 @@
 			var rowData = new Array();
 			var totaldata = new Array();
 			var checkbox = $("input[name=c1]:checked");
-			// 체크된 체크박스 값을 가져온다
-			/*
-			checkbox.each(function(i) {
-				var tdArr = new Array();
-			
-				// checkbox.parent() : checkbox의 부모는 <td>이다.
-				// checkbox.parent().parent() : <td>의 부모이므로 <tr>이다.
-				var tr = checkbox.parent().parent().eq(i);
-				var td = tr.children();
-				
-				// 체크된 row의 모든 값을 배열에 담는다.
-				rowData.push(tr.text());
-				
-				// td.eq(0)은 체크박스 이므로  td.eq(1)의 값부터 가져온다.
-				var id = td.eq(1).text();
-				var name = td.eq(2).text();
-				var job = td.eq(3).text();
-				var phonenumber = td.eq(4).text();
-				var email = td.eq(5).text();
-				var updateDate = td.eq(6).text();
-				// 가져온 값을 배열에 담는다.
-				tdArr.push(id);
-				tdArr.push(name);
-				tdArr.push(job);
-				tdArr.push(phonenumber);
-				tdArr.push(email);
-				tdArr.push(updateDate);
-				totaldata.push(tdArr);
-			});
-			 */
 			var idx = $("input:checkbox[name=c1]:checked").length - 1
 			var tr = checkbox.parent().parent().eq(idx);
 			var td = tr.children();
@@ -53,14 +24,54 @@
 			var phonenumber = td.eq(4).text();
 			var email = td.eq(5).text();
 			var updateDate = td.eq(6).text();
+			
 			name = name.trim();
+			
 			$("#modify_main_id").val(id);
 			$("#modifyid").val(id);
 			$("#modifyname").val(name);
 			$("#modifyjob").val(job);
 			$("#modifyphonenumber").val(phonenumber);
 			$("#modifyemail").val(email);
-			//test
+			
+			//getfile
+			$.ajax({
+		       url: "/showDetail",
+		       type: "get",
+		       data : {
+					"id" : id
+				},
+		       contentType: "application/json; charset=utf-8;",
+		       success: function(result){
+		    	   empfiles = result.empfiles;
+			       	id = result.employee[0].id;
+			       	name = result.employee[0].name;
+			       	job = result.employee[0].job;
+			       	phonenumber = result.employee[0].phonenumber;
+			       	email = result.employee[0].email;
+			       	updateDate = result.employee[0].updateDate;
+		       }, complete : function() {		   		
+			   		$("#detailid").text(id);
+			   		$("#detailname").text(name);
+			   		$("#detailjob").text(job);
+			   		$("#detailphonenumber").text(phonenumber);
+			   		$("#detailemail").text(email);
+			   		$("#detailupdateDate").text(updateDate);
+				    console.log(empfiles);
+			   		$.each( empfiles, function( key, file ){ //key -> index
+		    		    console.log(key );
+		    		    modifycontent_files.push(file);
+		    		    $('#modifyfileChange').append(
+		    		    		'<div id="file' + key + '" >'
+		    		       		+ '<font style="font-size:12px">' + file.org_file_name + '</font>'  
+		    		       		+ '<a href="#" style="margin-left: 5px; font-size: 12px;"'
+		    		       		+ 'onclick="modify_fileDelete(\'file' + key + '\')">삭제</a>' 
+		    		       		+ '<div/>'
+		    		    );
+				    });
+		       }
+			});
+			
 			action = 'modify';
 			type = 'POST'
 			$("#modifyModal").modal();
@@ -170,20 +181,59 @@
 				$("#modifyemail").focus();
 				return;
 			}
-
-			url = '/doModify';
-
-			var data = {
-				"id" : $("#modifyid").val(),
-				"mainid" : $("#modify_main_id").val(),
-				"name" : $("#modifyname").val(),
-				"job" : $("#modifyjob").val(),
-				"phonenumber" : $("#modifyphonenumber").val(),
-				"email" : $("#modifyemail").val()
-			};
-
+			
+			
+			var form = $("form")[0];        
+		 	var formData2 = new FormData(form);
+		 	var delfile = [];
+		 	var fileSize = 0;	
+		 	
+		 	for (var x = 0; x < modifycontent_files.length; x++) {
+				// 삭제 안한것만 담아 준다. 
+				if(!modifycontent_files[x].is_delete){
+					formData2.append("modify_file", modifycontent_files[x]);
+					fileSize++;
+				}else{
+					delfile.push(modifycontent_files[x].fileid);
+				}
+			}
+		 	
+			formData2.append("empid", $("#modifyid").val());
+			formData2.append("mainid", $("#modify_main_id").val());
+			formData2.append("delfile", delfile);
+			
+			if (fileSize == 0) {
+				alert("1개이상의 파일을 등록해 주세요.");
+				return;
+			}
+			
+			var fileSize = 0;			
+		   
 			$.ajax({
-				url : url,
+		        type : 'post',
+		   	   	enctype: "multipart/form-data",
+		        url : '/doModifyFile',
+		        data : formData2,
+		        processData : false,
+		        contentType : false,
+		        success : function(data) {
+		        },
+		        error : function(error) {
+		            alert("파일 업로드에 실패하였습니다.");
+		        }
+		    })
+			
+			var data = {
+					"id" : $("#modifyid").val(),
+					"mainid" : $("#modify_main_id").val(),
+					"name" : $("#modifyname").val(),
+					"job" : $("#modifyjob").val(),
+					"phonenumber" : $("#modifyphonenumber").val(),
+					"email" : $("#modifyemail").val()
+				};
+			
+			$.ajax({
+				url : "doModify",
 				type : type,
 				data : data,
 				success : function(data) {
@@ -209,6 +259,54 @@
 			var regExp = /[a-zA-Zㄱ-힣]{1,10}/;
 			return regExp.test(asValue); // 형식에 맞는 경우 true 리턴	
 		}
+		
+		$(function() {
+			$('#modify-btn-upload').click(function(e) {
+				e.preventDefault();
+				$('#modify_input_file').click();
+			});
+		});
+		// 파일 현재 필드 숫자 totalCount랑 비교값
+		var fileCount = 0;
+		// 해당 숫자를 수정하여 전체 업로드 갯수를 정한다.
+		var totalCount = 10;
+		// 파일 고유넘버
+		var fileNum = 0;
+		
+		function modify_fileCheck(e) {
+		    var files = e.target.files;
+		    
+		    // 파일 배열 담기
+		    var filesArr = Array.prototype.slice.call(files);
+		    
+		    // 파일 개수 확인 및 제한
+		    if (fileCount + filesArr.length > totalCount) {
+		      alert('파일은 최대 '+totalCount+'개까지 업로드 할 수 있습니다.');
+		      return;
+		    } else {
+		    	 fileCount = fileCount + filesArr.length;
+		    }
+		    
+		    // 각각의 파일 배열담기 및 기타
+		    filesArr.forEach(function (f) {
+		      var reader = new FileReader();
+		      reader.onload = function (e) {
+		    	  modifycontent_files.push(f);
+		        $('#modifyfileChange').append(
+		       		'<div id="file' + fileNum + '" >'
+		       		+ '<font style="font-size:12px">' + f.name + '</font>'  
+		       		+ '<a href="#" style="margin-left: 5px; font-size: 12px;"'
+		       		+ 'onclick="modify_fileDelete(\'file' + fileNum + '\')">삭제</a>' 
+		       		+ '<div/>'
+				);
+		        fileNum ++;
+		      };
+		      reader.readAsDataURL(f);
+		    });
+		    console.log(modifycontent_files);
+		    //초기화 한다.
+		    $("#modify_input_file").val("");
+		  }
 	});
 </script>
 </head>

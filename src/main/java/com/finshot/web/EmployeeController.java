@@ -1,9 +1,7 @@
 package com.finshot.web;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
@@ -18,19 +16,18 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 @Controller
 public class EmployeeController {
 
 	@Autowired
 	private EmployeeService service;
-
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String showList(Locale locale, Model model, @RequestParam Map<String, Object> param) {
 		int totalCount = service.getTotalCount(param);
@@ -96,13 +93,21 @@ public class EmployeeController {
 		model.addAttribute("replaceUri", String.format("/list"));
 		return "redirect";
 	}
-
+	
+	@RequestMapping(value = "/doModifyFile")
+	public String doModifyFile( Model model, @RequestParam Map<String, Object> param, @RequestParam("modify_file") List<MultipartFile> multipartFile,
+			@RequestParam(value="delfile") List<Integer> delfiles)  {
+		service.modifyFile(param, multipartFile, delfiles);
+		model.addAttribute("msg", "등록되었s습니다.");
+		model.addAttribute("replaceUri", String.format("/list"));
+		return "redirect";
+	}
+	
 	@RequestMapping(value = "/showDetail")
 	@ResponseBody
 	public Map<String, Object> showDetail(HttpServletResponse response, @RequestParam("id") int id) {
 		List<Employee> employee = service.getEmployee(id);
 		List<Empfile> empfiles = service.getEmpfile(id);
-		System.out.println(empfiles);
 		Map<String, Object> list = new HashMap<String, Object>();
 		list.put("employee", employee);
 		list.put("empfiles", empfiles);
@@ -168,9 +173,9 @@ public class EmployeeController {
 			HttpServletRequest request) throws Exception {
 		int fileid = Util.getAsInt(param.get("fileid"));
 		param.replace("fileid", fileid);
-		
+
 		Empfile empfile = service.getEmpfilebyFileid(param);
-		
+
 		String storedFileName = empfile.getStored_file_name();
 		String originalFileName = empfile.getOrg_file_name();
 		byte fileByte[] = FileUtils.readFileToByteArray(new File("C:\\upload\\" + storedFileName));

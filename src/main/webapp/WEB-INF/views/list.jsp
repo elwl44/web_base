@@ -48,9 +48,9 @@
 	});
 </script>
 <%@include file="write_js.jsp"%>
-<%@include file="modify_js.jsp"%>
 <%@include file="delete_js.jsp"%>
 <%@include file="detail_js.jsp"%>
+<%@include file="modify_js.jsp"%>
 </head>
 <body>
 

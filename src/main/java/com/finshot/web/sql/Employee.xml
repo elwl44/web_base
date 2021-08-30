@@ -99,4 +99,15 @@
 		DELETE FROM emp_file
 		WHERE empid = #{id}
 	</delete>
+	
+	<delete id="deleteEmpfileByFileid">
+		DELETE FROM emp_file
+		WHERE fileid = #{fileid}
+	</delete>
+	
+	<update id="updateEmpfile">
+		UPDATE emp_file set
+		empid = #{empid}
+		WHERE empid = #{mainid}
+	</update>
 </mapper>
