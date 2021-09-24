@@ -3,6 +3,9 @@ package com.finshot.web;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 
 @Controller
 public class EmployeeController {
@@ -49,6 +51,7 @@ public class EmployeeController {
 		param.put("itemsCountInAPage", itemsCountInAPage);
 
 		List<Employee> employees = service.getEmployees(param);
+		Util.parsDateTime(employees);
 		String searchKeyword = (String) param.get("searchKeyword");
 		String search_target = (String) param.get("search_target");
 		model.addAttribute("search_target", search_target);

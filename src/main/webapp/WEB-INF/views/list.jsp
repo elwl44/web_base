@@ -95,6 +95,7 @@
 					<th scope="col">전화번호</th>
 					<th scope="col">이메일</th>
 					<th scope="col">수정일</th>
+					<th scope="col">직원정보 메일발송</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -112,6 +113,7 @@
 						<td>${article.phonenumber }</td>
 						<td>${article.email }</td>
 						<td>${article.updateDate}</td>
+						<td><button type="button" class="btn btn-outline-primary show" id="deleteBtn" data-toggle="delete">메일발송하기</button></td>
 					</tr>
 				</c:forEach>
 			</tbody>
