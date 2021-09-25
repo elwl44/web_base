@@ -28,7 +28,6 @@ public class EmployeeService {
 
 	public List<Employee> getEmployees(Map<String, Object> param) {
 		int page = Util.getAsInt(param.get("page"), 1);
-
 		int itemsCountInAPage = (Integer) param.get("itemsCountInAPage");
 		if (itemsCountInAPage > 100) {
 			itemsCountInAPage = 100;
@@ -172,5 +171,9 @@ public class EmployeeService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void addSendnumber(int id) {
+		employeeMapper.addSendnumber(id);
 	}
 }

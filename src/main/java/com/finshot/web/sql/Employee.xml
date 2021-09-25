@@ -110,4 +110,10 @@
 		empid = #{empid}
 		WHERE empid = #{mainid}
 	</update>
+	
+	<update id="addSendnumber">
+		UPDATE employee 
+		set	sendmail = sendmail + 1
+		WHERE id = #{id}
+	</update>
 </mapper>

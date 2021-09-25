@@ -43,8 +43,25 @@
 		}else if(target == "updateDate"){
 			$('#search_target option[value=updateDate]').attr('selected','selected');
 		}
-		
-		
+		$('#update input').on('click', function() {
+			var currentRow=$(this).closest('tr');
+			var col1 = currentRow.find('td:eq(0)').text();
+			$.ajax({
+				type : "POST",
+				url : "sendMail",
+				data : {
+					"id" : col1
+				},
+				success : function(data) { //data : checkSignup에서 넘겨준 결과값
+					if ($.trim(data) == "YES") {
+						alert("발송이 완료되었습니다.")
+					}
+					else{
+						alert("발송이 실패했습니다.")						
+					}
+				}
+			})
+		});
 	});
 </script>
 <%@include file="write_js.jsp"%>
@@ -112,8 +129,8 @@
 						<td>${article.job }</td>
 						<td>${article.phonenumber }</td>
 						<td>${article.email }</td>
-						<td>${article.updateDate}</td>
-						<td><button type="button" class="btn btn-outline-primary show" id="deleteBtn" data-toggle="delete">메일발송하기</button></td>
+						<td>${article.updateDate}</td>						
+						<td id="update"><input type="button" class="btn btn-outline-primary show" name="mailBtn" id = "mailBtn" value="메일발송하기"></td>
 					</tr>
 				</c:forEach>
 			</tbody>

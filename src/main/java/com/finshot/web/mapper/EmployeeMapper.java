@@ -34,4 +34,6 @@ public interface EmployeeMapper {
 
 	void updateEmpfile(Map<String, Object> param);
 
+	void addSendnumber(int id);
+
 }
