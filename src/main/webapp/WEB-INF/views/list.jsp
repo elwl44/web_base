@@ -43,6 +43,7 @@
 		}else if(target == "updateDate"){
 			$('#search_target option[value=updateDate]').attr('selected','selected');
 		}
+		
 		$('#update input').on('click', function() {
 			var currentRow=$(this).closest('tr');
 			var col1 = currentRow.find('td:eq(0)').text();
@@ -62,6 +63,7 @@
 				}
 			})
 		});
+		
 	});
 </script>
 <%@include file="write_js.jsp"%>

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import java.lang.management.ManagementFactory;
 
 @Controller
 public class EmployeeController {
@@ -265,5 +267,22 @@ public class EmployeeController {
 		}
 		service.addSendnumber(id);
 		return "YES";
+	}
+	
+	@Scheduled(cron= "0 0 14 * * ?")
+	public void ScheduleMail() {
+		String serverstatus = Util.getServerstatus();
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper messageHelper;
+		try {
+			messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+			messageHelper.setFrom(sendMail);
+			messageHelper.setTo(subjectMail); // 받는사람 이메일
+			messageHelper.setSubject("서버 정보"); // 메일제목은 생략이 가능하다
+			messageHelper.setText(serverstatus); // 메일 내용
+			mailSender.send(message);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		} // 보내는사람 생략하거나 하면 정상작동을 안함
 	}
 }

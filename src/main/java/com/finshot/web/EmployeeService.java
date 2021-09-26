@@ -3,6 +3,10 @@ package com.finshot.web;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,13 +24,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.finshot.web.mapper.EmployeeMapper;
+import com.sun.management.OperatingSystemMXBean;
 
 @Service
 public class EmployeeService {
 	@Autowired
 	private EmployeeMapper employeeMapper;
+	
+	private OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
 	public List<Employee> getEmployees(Map<String, Object> param) {
+		osBean.getSystemCpuLoad();
 		int page = Util.getAsInt(param.get("page"), 1);
 		int itemsCountInAPage = (Integer) param.get("itemsCountInAPage");
 		if (itemsCountInAPage > 100) {
